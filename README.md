@@ -1,11 +1,40 @@
+# 🎬 AI Cut Assistant (Automatic Video Recap Editor)
 
-  # AI Cut Assistant UI Design
+**AI Cut Assistant** — это гибридная система автоматизации видеомонтажа. В отличие от полностью автоматических сервисов, этот проект реализует концепцию **"Human-in-the-loop"**: ИИ берет на себя всю рутину (транскрибация, анализ сцен, написание сценария, озвучка), а человек остается финальным режиссером, контролируя процесс через интерактивный интерфейс.
 
-  This is a code bundle for AI Cut Assistant UI Design. The original project is available at https://www.figma.com/design/byIt8cJwStxTfejDFstcjO/AI-Cut-Assistant-UI-Design.
+![Main UI Screenshot](https://via.placeholder.com/1200x600?text=AI+Cut+Assistant+UI+Design)
 
-  ## Running the code
+## ✨ Основные возможности
 
-  Run `npm i` to install the dependencies.
+- 🎙️ **Умная транскрибация:** Использование `Whisper (Small/Medium)` для точного перевода речи в текст с поддержкой русского и английского языков.
+- 👁️ **Визуальный анализ (Computer Vision):** Модель `Moondream2` анализирует видеоряд и описывает происходящее в кадре, помогая ИИ "видеть" контекст.
+- 🧠 **AI Режиссер:** Интеграция с `DeepSeek R1` (через OpenRouter) или `Gemini` для автоматического создания сценария рекапа и расстановки клипов на таймлайне.
+- 🔊 **Нейронная озвучка:** Синтез голоса через `edge-tts` (Microsoft Azure технологии) с настройкой скорости и тона.
+- ✂️ **Автоматический монтаж:** Мощный движок на `MoviePy` и `FFmpeg`, который сам нарезает, склеивает и сводит аудиодорожки (Audio Ducking).
+- 💾 **Персистентность:** Хранение состояния сессии в `Redis` — ваша работа не пропадет при перезагрузке страницы.
+- 📦 **S3 Хранилище:** Использование `MinIO` для надежного хранения тяжелых медиафайлов и быстрых ссылок (Presigned URLs).
 
-  Run `npm run dev` to start the development server.
-  
+## 🚀 Технологический стек
+
+### Frontend
+- **React 18 + TypeScript + Vite**
+- **Tailwind CSS v4** (Modern Light Design)
+- **Wavesurfer.js** (Визуализация аудиоволны)
+- **Radix UI / Lucide React** (Интерфейс и иконки)
+
+### Backend (Python)
+- **FastAPI** (High-performance API)
+- **OpenAI Whisper** (Speech-to-Text)
+- **Moondream2** (Image-to-Text / Visual Analysis)
+- **MoviePy** (Video Processing Engine)
+- **Redis** (Session management)
+- **MinIO** (Object Storage)
+
+## 🛠️ Установка и запуск (Docker)
+
+Проект полностью контейнеризирован. Вам не нужно устанавливать FFmpeg или Python-библиотеки вручную.
+
+### 1. Клонируйте репозиторий
+```bash
+git clone https://github.com/M1xanikus/ai-video-assistant.git
+cd ai-video-assistant
