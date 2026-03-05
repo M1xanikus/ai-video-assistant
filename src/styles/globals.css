@@ -190,38 +190,78 @@ html {
   button, .cursor-pointer, [role="button"] {
     transition: all 0.2s ease;
   }
-  
+
   /* Custom scrollbar for a cleaner look */
   ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
   }
-  
+
   ::-webkit-scrollbar-track {
     background: #F8F9FA;
   }
-  
+
   ::-webkit-scrollbar-thumb {
     background: #DADCE0;
     border-radius: 4px;
   }
-  
+
   ::-webkit-scrollbar-thumb:hover {
     background: #BDC1C6;
   }
-  
+
   /* Ensure proper rounded corners everywhere */
   .rounded-lg {
     border-radius: 8px;
   }
-  
+
   /* Smooth hover animations */
   .hover-lift {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
-  
+
   .hover-lift:hover {
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
+  /* Custom Scrollbar Logic */
+
+  /* Область вьюпорта */
+  .scroll-viewport-area [data-radix-scroll-area-viewport] {
+    scrollbar-width: thin !important;
+    scrollbar-color: #cbd5e1 transparent !important;
+  }
+
+  /* Chrome, Safari, Edge */
+  .scroll-viewport-area ::-webkit-scrollbar {
+    width: 8px !important;
+    height: 8px !important;
+    display: block !important;
+  }
+
+  .scroll-viewport-area ::-webkit-scrollbar-track {
+    background: transparent !important;
+  }
+
+  .scroll-viewport-area ::-webkit-scrollbar-thumb {
+    background: #e2e8f0 !important; /* Светло-серый по умолчанию */
+    border-radius: 20px !important;
+    border: 2px solid white !important; /* Отступ от края */
+    transition: background 0.3s ease;
+  }
+
+  .scroll-viewport-area:hover ::-webkit-scrollbar-thumb {
+    background: #cbd5e1 !important; /* Становится темнее при наведении на панель */
+  }
+
+  .scroll-viewport-area ::-webkit-scrollbar-thumb:hover {
+    background: #1a73e8 !important; /* Синий при прямом наведении на ползунок */
+  }
+
+  /* Фикс для предотвращения "прыжков" контента */
+  .scroll-viewport-area [data-radix-scroll-area-viewport] > div {
+    display: flex !important;
+    flex-direction: column !important;
+  }
 }
+

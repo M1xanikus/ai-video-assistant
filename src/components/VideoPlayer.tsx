@@ -27,10 +27,17 @@ export function VideoPlayer({
     }
   }, [volume]);
 
-  // Синхронизация времени видео при внешнем изменении (например, из таймлайна)
+  // Синхронизация времени при внешнем изменении (например, из таймлайна)
+  // Используем ref-флаг чтобы не зациклить: внешний seek → onTimeUpdate → этот effect
+  const isSeekingExternally = useRef(false);
   useEffect(() => {
-    if (videoRef.current && Math.abs(videoRef.current.currentTime - currentTime) > 0.1) {
-      videoRef.current.currentTime = currentTime;
+    const video = videoRef.current;
+    if (!video) return;
+    const diff = Math.abs(video.currentTime - currentTime);
+    // Порог 0.3с — иначе мы будем дёргать видео при каждом onTimeUpdate во время воспроизведения
+    if (diff > 0.3 && !isSeekingExternally.current) {
+      isSeekingExternally.current = true;
+      video.currentTime = currentTime;
     }
   }, [currentTime]);
 
@@ -42,7 +49,6 @@ export function VideoPlayer({
 
   const handlePlayPause = () => {
     if (!videoRef.current) return;
-
     if (isPlaying) {
       videoRef.current.pause();
     } else {
@@ -53,6 +59,7 @@ export function VideoPlayer({
 
   const handleTimeUpdate = () => {
     if (videoRef.current) {
+      isSeekingExternally.current = false;
       onTimeUpdate(videoRef.current.currentTime);
     }
   };
@@ -63,10 +70,21 @@ export function VideoPlayer({
     }
   };
 
+  // FIX: сбрасываем isPlaying когда видео заканчивается
+  // Без этого кнопка показывала Pause после завершения видео
+  const handleEnded = () => {
+    setIsPlaying(false);
+  };
+
+  // FIX: синхронизируем isPlaying с реальным состоянием элемента,
+  // чтобы внешний вызов .pause() (например, при seek) не рассинхронизировал UI
+  const handlePlay = () => setIsPlaying(true);
+  const handlePause = () => setIsPlaying(false);
+
   const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const pos = (e.clientX - rect.left) / rect.width;
-    const newTime = pos * duration;
+    const newTime = Math.max(0, Math.min(duration, pos * duration));
     if (videoRef.current) {
       videoRef.current.currentTime = newTime;
     }
@@ -109,12 +127,12 @@ export function VideoPlayer({
             className="max-w-full max-h-full"
             onTimeUpdate={handleTimeUpdate}
             onLoadedMetadata={handleLoadedMetadata}
-            onPlay={() => setIsPlaying(true)}
-            onPause={() => setIsPlaying(false)}
+            onPlay={handlePlay}
+            onPause={handlePause}
+            onEnded={handleEnded}
             onClick={handlePlayPause}
           />
         ) : (
-          /* Empty State */
           <div className="text-center text-white/50">
             <Upload className="w-16 h-16 mx-auto mb-4 opacity-20" />
             <div className="text-sm">No video selected</div>
@@ -122,7 +140,7 @@ export function VideoPlayer({
           </div>
         )}
 
-        {/* Video Controls Overlay (только если видео загружено) */}
+        {/* Video Controls Overlay */}
         {videoUrl && (
           <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity">
             {/* Progress Bar */}
@@ -132,7 +150,7 @@ export function VideoPlayer({
             >
               <div
                 className="h-full bg-[#1A73E8] rounded-full relative"
-                style={{ width: `${(currentTime / duration) * 100}%` }}
+                style={{ width: `${duration > 0 ? (currentTime / duration) * 100 : 0}%` }}
               >
                 <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full scale-0 group-hover/progress:scale-100 transition-transform" />
               </div>
