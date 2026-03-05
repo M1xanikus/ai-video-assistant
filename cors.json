@@ -1,0 +1,8 @@
+[
+  {
+    "allowedOrigins": ["*"],
+    "allowedMethods": ["GET", "HEAD"],
+    "allowedHeaders": ["*"],
+    "exposeHeaders": ["ETag", "Content-Range", "Accept-Ranges", "Content-Length", "Content-Type"]
+  }
+]

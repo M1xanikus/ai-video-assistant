@@ -1,0 +1,30 @@
+# Node.js (Frontend)
+node_modules/
+dist/
+.env
+.env.local
+
+# Python (Backend)
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+.env
+
+# Project Specific (Самое важное!)
+# Мы не пушим видео и аудио данные
+backend/uploads/*
+backend/outputs/*
+backend/audio_cache/*
+backend/temp_audio/*
+!backend/uploads/.gitkeep
+!backend/outputs/.gitkeep
+
+# Docker & MinIO
+minio_data/
+.docker/
+
+# OS files
+.DS_Store
+Thumbs.db
